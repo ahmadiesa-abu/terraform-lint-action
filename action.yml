@@ -48,10 +48,10 @@ runs:
 
         def prepare_parameters_file(variables, environment_variables):
             
-          tflint_config = json.loads("${{ inputs.api-key }}")
+          tflint_config = json.loads("${{ inputs.tflint-config }}")
 
           workflow_parms = {
-            'operation': 'terraform.tfsec',
+            'operation': 'terraform.tflint',
             'node_ids': ['terraform_module']
           }
           with open('workflow_params.yaml', 'w') as outfile:
