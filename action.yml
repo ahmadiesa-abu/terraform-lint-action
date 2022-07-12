@@ -1,5 +1,5 @@
-name: Execute Terraform Environment Plan
-description: Execute a terraform plan on already created environment, or create one if it doesn't exist.
+name: Execute Terraform tf lint operation
+description: Execute a terraform tflint on already created environment
 branding:
   icon: cloud
   color: white
@@ -26,7 +26,7 @@ inputs:
 outputs:
   terraform-cost:
     description: Terraform module plan
-    value: ${{ steps.get_terraform_plan.outputs.cost }}
+    value: ${{ steps.get_execution_events.outputs.cli-output }}
 runs:
   using: "composite"
   steps:
@@ -97,3 +97,25 @@ runs:
         content="${content//$'\r'/'%0D'}"
         # end of optional handling for multi line json
         echo "::set-output name=packageJson::$content"
+        
+    - name: get deployment executions
+      id: get_executions
+      uses: cloudify-cosmo/cli-action@v1.2
+      with:
+        command: executions list --descending -d ${{ steps.check_if_deployment_exists.outputs.deployment_id || fromJson(steps.get_deployment_id.outputs.packageJson).deployment_id}} --json
+
+    - name: parse deployment executions
+      id: get_last_execution_id
+      shell: python
+      run: |
+        import json
+        cli_output = ${{steps.get_nodes.outputs.cli-output}}
+        executions = json.loads(cli_output)
+        print ('::set-output name=execution_id::{0}'.format(executions[0].get('id')))
+
+    - name: get execution events
+      id: get_execution_events
+      uses: cloudify-cosmo/cli-action@v1.2
+      with:
+        command: events list ${{ steps.get_last_execution_id.outputs.execution_id }} -vv
+
