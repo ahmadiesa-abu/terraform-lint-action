@@ -119,7 +119,7 @@ runs:
       with:
         command: events list ${{ steps.get_last_execution_id.outputs.execution_id }} -vv
         
-     - name: get terraform module plan runtime property
+    - name: get terraform module plan runtime property
       id: get_terraform_lint
       shell: python
       run: |
