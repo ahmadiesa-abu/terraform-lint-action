@@ -117,7 +117,7 @@ runs:
       id: get_execution_events
       uses: cloudify-cosmo/cli-action@v1.2
       with:
-        command: events list ${{ steps.get_last_execution_id.outputs.execution_id }} -vv
+        command: events list ${{ steps.get_last_execution_id.outputs.execution_id }}
         
     - name: get terraform module plan runtime property
       id: get_terraform_lint
