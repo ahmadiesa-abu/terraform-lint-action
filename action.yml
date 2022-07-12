@@ -26,7 +26,7 @@ inputs:
 outputs:
   terraform-lint:
     description: Terraform module plan
-    value: ${{ steps.get_execution_events.outputs.cli-output }}
+    value: ${{ steps.get_terraform_lint.outputs.cli-output }}
 runs:
   using: "composite"
   steps:
@@ -109,7 +109,7 @@ runs:
       shell: python
       run: |
         import json
-        cli_output = ${{steps.get_nodes.outputs.cli-output}}
+        cli_output = ${{steps.get_executions.outputs.cli-output}}
         executions = json.loads(cli_output)
         print ('::set-output name=execution_id::{0}'.format(executions[0].get('id')))
 
@@ -118,4 +118,16 @@ runs:
       uses: cloudify-cosmo/cli-action@v1.2
       with:
         command: events list ${{ steps.get_last_execution_id.outputs.execution_id }} -vv
+        
+     - name: get terraform module plan runtime property
+      id: get_terraform_lint
+      shell: python
+      run: |
+        import json
+        cli_output = ${{steps.get_execution_events.outputs.cli-output}}
+        print('cli_output {0}'.format(cli_output))
+        cli_output = cli_output.replace('%','%25')
+        cli_output = cli_output.replace('\n','%0A')
+        cli_output = cli_output.replace('\r','%0D')
+        print ('::set-output name=cli_output::{0}'.format(cli_output))
 
