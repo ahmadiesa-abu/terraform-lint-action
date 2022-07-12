@@ -24,7 +24,7 @@ inputs:
     required: true
     default: "-"  
 outputs:
-  terraform-cost:
+  terraform-lint:
     description: Terraform module plan
     value: ${{ steps.get_execution_events.outputs.cli-output }}
 runs:
