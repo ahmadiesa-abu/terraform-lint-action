@@ -124,7 +124,7 @@ runs:
       shell: python
       run: |
         import json
-        cli_output = ${{steps.get_execution_events.outputs.cli-output}}
+        cli_output = "${{steps.get_execution_events.outputs.cli-output}}".encode('utf-8')
         print('cli_output {0}'.format(cli_output))
         cli_output = cli_output.replace('%','%25')
         cli_output = cli_output.replace('\n','%0A')
